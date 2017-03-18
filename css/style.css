@@ -1,0 +1,209 @@
+@import url("https://fonts.googleapis.com/css?family=Arima+Madurai");
+body {
+  background-color: black;
+}
+
+#title {
+  position: absolute;
+  margin-left: -225px;
+  margin-top: 83px;
+  font-weight: bold;
+  font-size: 21px;
+  color: white;
+  font-family: "Arima Madurai", cursive;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+#toggle {
+  position: absolute;
+  margin-left: -165px;
+}
+
+#log {
+  margin-top: -113px;
+  margin-left: 425px;
+  position: absolute;
+  width: 300px;
+  height: 105px;
+}
+
+#lvlinfo {
+  color: white;
+  position: absolute;
+  margin-top: -10px;
+  width: 80px;
+  font-weight: bold;
+  margin-left: 10px;
+}
+
+#playerimage {
+  background: url("http://orig10.deviantart.net/26fb/f/2013/111/f/e/office_guy__running_animation_16x16_by_madgharr-d624kuf.gif") no-repeat;
+  background-size: cover;
+  height: 80px;
+  width: 80px;
+  margin-top: 10px;
+  margin-left: 10px;
+}
+
+#playerinfo {
+  font-family: "Arima Madurai", cursive;
+  font-weight: bold;
+  color: white;
+  margin-top: -90px;
+  width: 150px;
+  height: 105px;
+  margin-left: 100px;
+}
+
+#player {
+  width: 250px;
+  height: 105px;
+  margin: 10px;
+}
+
+.cell {
+  background-color: #E4B363;
+  width: 15px;
+  height: 15px;
+  float: left;
+}
+
+.shadowcell {
+  width: 15px;
+  height: 15px;
+  float: left;
+}
+
+.wall {
+  background: url("https://s3.amazonaws.com/spoonflower/public/design_thumbnails/0396/3573/rbricks_large_shop_thumb.png") no-repeat;
+  background-size: cover;
+  background-color: white;
+}
+
+.player {
+  background: url("http://orig10.deviantart.net/26fb/f/2013/111/f/e/office_guy__running_animation_16x16_by_madgharr-d624kuf.gif") no-repeat;
+  background-size: cover;
+  background-color: #E4B363;
+}
+
+#log_img {
+  width: 80px;
+  height: 80px;
+  margin-left: 10px;
+  margin-top: 10px;
+  position: absolute;
+}
+
+#restart {
+  position: absolute;
+  margin-left: -160px;
+  margin-top: 42px;
+}
+
+#log-info {
+  padding: 10px;
+  font-family: "Arima Madurai", cursive;
+  font-weight: bold;
+  color: white;
+  width: 200px;
+  height: 105px;
+  margin-top: -10px;
+  margin-left: 100px;
+  position: absolute;
+}
+
+.chest {
+  background: url("http://cheerfulghost.com/assets/art/closed_chest-13c599d705338d4d97dadcac6ceff516.png") no-repeat;
+  background-size: cover;
+  background-color: #E4B363;
+}
+
+#main {
+  position: relative;
+  z-index: 0;
+  border: 15px solid black;
+  width: 930px;
+  height: 524px;
+  margin: 40px auto;
+  border-radius: 5px;
+}
+
+#shadowlinux {
+  margin-top: 40px;
+  opacity: 0.8;
+  border-radius: 5px;
+  position: absolute;
+  z-index: 2;
+  border: 15px solid black;
+  width: 930px;
+  height: 524px;
+  margin-left: auto;
+  margin-right: auto;
+  left: 0;
+  right: 0;
+}
+
+#playerbox {
+  margin-top: 10px;
+  positon: relative;
+  margin-bottom: -30px;
+  height: 140px;
+  width: 750px;
+  border-radius: 14px;
+  border: 7px solid white;
+  margin-left: auto;
+  margin-right: auto;
+  left: 0;
+  right: 0;
+}
+
+#shadow {
+  margin-top: 40px;
+  border-radius: 5px;
+  position: absolute;
+  z-index: 1;
+  border: 15px solid black;
+  width: 930px;
+  height: 524px;
+  margin-left: auto;
+  margin-right: auto;
+  left: 0;
+  right: 0;
+}
+
+.chess {
+  background-color: black !important;
+}
+
+.potion {
+  background: url("http://vignette2.wikia.nocookie.net/minecraft-computer/images/3/30/Potion_of_Healing.png/revision/latest?cb=20140406170100") no-repeat;
+  background-size: cover;
+  background-color: #E4B363;
+}
+
+.enemy1 {
+  background: url("http://orig03.deviantart.net/536a/f/2014/070/b/3/enemy_skeleton_by_madgharr-d7945fv.gif") no-repeat;
+  background-size: cover;
+  background-color: #E4B363;
+}
+
+.enemy2 {
+  background: url("https://media.giphy.com/media/29NpOANADahbO/giphy.gif") no-repeat;
+  background-size: cover;
+  background-color: #E4B363;
+}
+
+.door {
+  background: url("http://vignette3.wikia.nocookie.net/pixeldungeon/images/3/36/Door.png/revision/latest?cb=20130530170051") no-repeat;
+  background-size: cover;
+  background-color: #E4B363;
+}
+
+.boss {
+  background: url("https://cdn2.scratch.mit.edu/get_image/user/3131893_90x90.png?v=1463891773.63") no-repeat;
+  background-size: cover;
+  background-color: #E4B363;
+}

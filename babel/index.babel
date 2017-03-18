@@ -1,0 +1,1215 @@
+let dungeon = 0
+let type = 0
+class App extends React.Component {
+   constructor(props) {
+      super(props);
+      this.state = {
+         currentmap: [],
+         rooms: [{
+            a: '0:0:',
+            b: '59:0:',
+            c: '0:32:',
+            d: '59:32:'
+         }],
+         showshadow: true,
+         health: 400,
+         attack: 80,
+         xp: 0,
+         dungeon: 1,
+         weapon: 'Knuckles',
+         log: 'Find the door to next level. Dont forget to find 2 weapons on this level.',
+         log_img: 'http://vignette3.wikia.nocookie.net/pixeldungeon/images/3/36/Door.png/revision/latest?cb=20130530170051'
+      }
+   }
+   restart() {
+      this.clear()
+      setTimeout(() => this.generatemap(), 100)
+   }
+   componentDidMount() {
+      window.addEventListener('keydown', this.arrowclick.bind(this), true);
+      this.generatemap()
+   }
+   arrowclick(e) {
+      console.log(e.which) // to get the code
+      let copy = this.state.currentmap
+      let target = ''
+      let interest = 0
+      switch (e.keyCode) {
+         case 37:
+         case 65:
+
+            for (let x = 0; x < copy.length; x++) {
+               let locale = copy[x].split(':')[2]
+               if (locale == 'player' && Number(copy[x].split(':')[0]) > 0) {
+                  target = x
+               }
+            }
+            if (target !== '') {
+               let need = copy[target - 1].split(':')[2]
+               switch (need) {
+                  case 'boss':
+                     let damagein = Number(Math.floor(Math.random() * 10) - 5) + Number(copy[target - 1].split(':')[4])
+                     let damageout = Math.floor(Math.random() * 10) - 5 + this.state.attack
+                     let playerhp = Number(this.state.health)
+                     let bossnexthp = Number(copy[target - 1].split(':')[3]) - damageout
+                     if ((playerhp - damagein) > 0) {
+                        if (bossnexthp > 0) {
+                           copy[target - 1] = copy[target - 1].split(':')[0] + ':' + copy[target - 1].split(':')[1] + ':' + copy[target - 1].split(':')[2] + ':' + bossnexthp + ':' + copy[target - 1].split(':')[4]
+                           this.setState({
+                              health: playerhp - damagein,
+                              log: 'You attacked ' + 'Boss' + ' with ' + damageout + ' attack. Now his hp is ' + bossnexthp + '. Now your hp is ' + (playerhp - damagein),
+                              log_img: 'https://cdn2.scratch.mit.edu/get_image/user/3131893_90x90.png?v=1463891773.63',
+                           })
+                        } else {
+                           alert('You won this game. Congrats!!!! (Applause sounds)')
+                           this.restart()
+                        }
+                     } else {
+                        alert('You died from this cute boss. Die in peace and Try again! ^_^')
+                        this.restart()
+                     }
+
+                     break;
+                  case 'door':
+                     dungeon++
+                     interest = 1
+                     this.generatemap()
+                     if (dungeon == 2) {
+                        this.setState({
+                           log: 'Now you need to kill the Boss. He has 1300 HP and 200 attack, be aware with this guy. And try to find Magic sword.',
+                           log_img: 'https://cdn2.scratch.mit.edu/get_image/user/3131893_90x90.png?v=1463891773.63',
+                           dungeon: 3
+                        })
+                     } else {
+                        this.setState({
+                           log: 'Find the door to next level. Dont forget to find 2 weapons on this level.',
+                           log_img: 'http://vignette3.wikia.nocookie.net/pixeldungeon/images/3/36/Door.png/revision/latest?cb=20130530170051',
+                           dungeon: 2
+                        })
+                     }
+                     break;
+                  case 'wall':
+
+                     break;
+                  case 'potion':
+                     copy[target] = copy[target].split(':')[0] + ':' + copy[target].split(':')[1] + ':'
+                     copy[target - 1] = copy[target - 1].split(':')[0] + ':' + copy[target - 1].split(':')[1] + ':' + 'player'
+                     this.setState({
+                        health: this.state.health + 70,
+                        log_img: 'http://vignette2.wikia.nocookie.net/minecraft-computer/images/3/30/Potion_of_Healing.png/revision/latest?cb=20140406170100',
+                        log: "You've taken 70 hp potion. Now your HP is " + (this.state.health + 70)
+                     })
+                     break;
+                  case '':
+                     copy[target] = copy[target].split(':')[0] + ':' + copy[target].split(':')[1] + ':'
+                     copy[target - 1] = copy[target - 1] + 'player'
+                     break;
+                  case 'chest':
+                     let funny = copy[target - 1].split(':')[3]
+                     copy[target] = copy[target].split(':')[0] + ':' + copy[target].split(':')[1] + ':'
+                     copy[target - 1] = copy[target - 1].split(':')[0] + ':' + copy[target - 1].split(':')[1] + ':' + 'player'
+                     let damage = 0
+                     switch (funny) {
+                        case 'Club':
+                           damage = 20
+                           break;
+                        case 'Dagger':
+                           damage = 50
+                           break;
+                        case 'Battle axe':
+                           damage = 75
+                           break;
+                        case 'Longsword':
+                           damage = 105
+                           break;
+                        case 'Magic sword':
+                           damage = 130
+                           break;
+                     }
+                     if (damage < (this.state.attack - 80 * (Math.floor(this.state.xp / 60) + 1))) {
+                        let kek = 'Not increased because you have better weapon'
+                        this.setState({
+                           weapon: this.state.weapon,
+                           log_img: 'http://cheerfulghost.com/assets/art/closed_chest-13c599d705338d4d97dadcac6ceff516.png',
+                           log: "You've found a " + funny + " in a chest. Damage: " + kek,
+                           attack: this.state.attack
+                        })
+                     } else {
+                        let kek = '+ ' + damage
+                        this.setState({
+                           weapon: funny,
+                           log_img: 'http://cheerfulghost.com/assets/art/closed_chest-13c599d705338d4d97dadcac6ceff516.png',
+                           log: "You've found a " + funny + " in a chest. Damage: " + kek,
+                           attack: (Math.floor(this.state.xp / 60) + 1) * 80 + damage
+                        })
+                     }
+                     break;
+                  case 'enemy':
+                     let imglink = ''
+                     let enemyname = ''
+                     let enemytype = copy[target - 1].split(':')[3]
+                     switch (enemytype) {
+                        case '2':
+                           enemyname = 'Fish'
+                           imglink = 'https://media.giphy.com/media/29NpOANADahbO/giphy.gif'
+                           break;
+                        case '1':
+                           enemyname = 'Skeleton'
+                           imglink = 'http://orig03.deviantart.net/536a/f/2014/070/b/3/enemy_skeleton_by_madgharr-d7945fv.gif'
+                           break;
+                     }
+
+                     let damageincome = Number(Math.floor(Math.random() * 10) - 5) + Number(copy[target - 1].split(':')[5])
+                     let damageoutcome = Math.floor(Math.random() * 10) - 5 + this.state.attack
+                     let yourhp = Number(this.state.health)
+                     let enemynexthp = Number(copy[target - 1].split(':')[4]) - damageoutcome
+                     damageincome = Number(damageincome)
+                     yourhp = Number(yourhp)
+
+                     if ((yourhp - damageincome) > 0) {
+                        if (enemynexthp > 0) {
+                           copy[target - 1] = copy[target - 1].split(':')[0] + ':' + copy[target - 1].split(':')[1] + ':' + copy[target - 1].split(':')[2] + ':' + copy[target - 1].split(':')[3] + ':' + enemynexthp + ':' + copy[target - 1].split(':')[5]
+                           this.setState({
+                              health: yourhp - damageincome,
+                              log: 'You attacked ' + enemyname + ' with ' + damageoutcome + ' attack. Now his hp is ' + enemynexthp + '. Now your hp is ' + (yourhp - damageincome),
+                              log_img: imglink,
+                           })
+                        } else {
+                           let xper = ''
+                           switch (enemyname) {
+                              case 'Fish':
+                                 xper = 9
+                                 break;
+                              case 'Skeleton':
+                                 xper = 5
+                                 break;
+                           }
+                           let weapondamage = 0
+                           switch (this.state.weapon) {
+                              case 'Club':
+                                 weapondamage = 20
+                                 break;
+                              case 'Dagger':
+                                 weapondamage = 50
+                                 break;
+                              case 'Battle axe':
+                                 weapondamage = 75
+                                 break;
+                              case 'Longsword':
+                                 weapondamage = 105
+                                 break;
+                              case 'Magic sword':
+                                 weapondamage = 130
+                                 break;
+                           }
+                           copy[target] = copy[target].split(':')[0] + ':' + copy[target].split(':')[1] + ':'
+                           copy[target - 1] = copy[target - 1].split(':')[0] + ':' + copy[target - 1].split(':')[1] + ':' + 'player'
+                           this.setState({
+                              health: yourhp - damageincome,
+                              log: 'You killed ' + enemyname + '. Now your hp is ' + (yourhp - damageincome) + '. You"ve achieved ' + xper + ' xp points.',
+                              log_img: imglink,
+                              xp: this.state.xp + xper,
+                              attack: ((Math.floor((this.state.xp + xper) / 60) + 1) * 80 + weapondamage)
+                           })
+                        }
+                     } else {
+                        alert('You died')
+                        this.clear()
+                        setTimeout(() => this.generatemap(), 100)
+                     }
+                     break;
+               }
+
+            }
+            if (interest == 0) {
+               this.setState({
+                  currentmap: copy
+               })
+            }
+            // left key pressed
+            break;
+         case 38:
+         case 87:
+
+            for (let x = 0; x < copy.length; x++) {
+               let locale = copy[x].split(':')[2]
+               if (locale == 'player' && Number(copy[x].split(':')[1]) > 0) {
+                  target = x
+               }
+            }
+            if (target !== '') {
+               let need = copy[target - 60].split(':')[2]
+               switch (need) {
+                  case 'boss':
+                     let damagein = Number(Math.floor(Math.random() * 10) - 5) + Number(copy[target - 60].split(':')[4])
+                     let damageout = Math.floor(Math.random() * 10) - 5 + this.state.attack
+                     let playerhp = Number(this.state.health)
+                     let bossnexthp = Number(copy[target - 60].split(':')[3]) - damageout
+                     if ((playerhp - damagein) > 0) {
+                        if (bossnexthp > 0) {
+                           copy[target - 60] = copy[target - 60].split(':')[0] + ':' + copy[target - 60].split(':')[1] + ':' + copy[target - 60].split(':')[2] + ':' + bossnexthp + ':' + copy[target - 60].split(':')[4]
+                           this.setState({
+                              health: playerhp - damagein,
+                              log: 'You attacked ' + 'Boss' + ' with ' + damageout + ' attack. Now his hp is ' + bossnexthp + '. Now your hp is ' + (playerhp - damagein),
+                              log_img: 'https://cdn2.scratch.mit.edu/get_image/user/3131893_90x90.png?v=1463891773.63',
+                           })
+                        } else {
+                           alert('You won this game. Congrats!!!! (Applause sounds)')
+                           this.restart()
+                        }
+                     } else {
+                        alert('You died from this cute boss. Die in peace and Try again! ^_^')
+                        this.restart()
+                     }
+
+                     break;
+                  case 'door':
+                     dungeon++
+                     interest = 1
+                     this.generatemap()
+                     if (dungeon == 2) {
+                        this.setState({
+                           log: 'Now you need to kill the Boss. He has 1300 HP and 200 attack, be aware with this guy. And try to find Magic sword.',
+                           log_img: 'https://cdn2.scratch.mit.edu/get_image/user/3131893_90x90.png?v=1463891773.63',
+                           dungeon: 3
+                        })
+                     } else {
+                        this.setState({
+                           log: 'Find the door to next level. Dont forget to find 2 weapons on this level.',
+                           log_img: 'http://vignette3.wikia.nocookie.net/pixeldungeon/images/3/36/Door.png/revision/latest?cb=20130530170051',
+                           dungeon: 2
+                        })
+                     }
+                     break;
+                  case 'chest':
+                     let funny = copy[target - 60].split(':')[3]
+                     copy[target] = copy[target].split(':')[0] + ':' + copy[target].split(':')[1] + ':'
+                     copy[target - 60] = copy[target - 60].split(':')[0] + ':' + copy[target - 60].split(':')[1] + ':' + 'player'
+                     let damage = 0
+                     switch (funny) {
+                        case 'Club':
+                           damage = 20
+                           break;
+                        case 'Dagger':
+                           damage = 50
+                           break;
+                        case 'Battle axe':
+                           damage = 75
+                           break;
+                        case 'Longsword':
+                           damage = 105
+                           break;
+                        case 'Magic sword':
+                           damage = 130
+                           break;
+                     }
+                     if (damage < (this.state.attack - 80 * (Math.floor(this.state.xp / 60) + 1))) {
+                        let kek = 'Not increased because you have better weapon'
+                        this.setState({
+                           weapon: this.state.weapon,
+                           log_img: 'http://cheerfulghost.com/assets/art/closed_chest-13c599d705338d4d97dadcac6ceff516.png',
+                           log: "You've found a " + funny + " in a chest. Damage: " + kek,
+                           attack: this.state.attack
+                        })
+                     } else {
+                        let kek = '+ ' + damage
+                        this.setState({
+                           weapon: funny,
+                           log_img: 'http://cheerfulghost.com/assets/art/closed_chest-13c599d705338d4d97dadcac6ceff516.png',
+                           log: "You've found a " + funny + " in a chest. Damage: " + kek,
+                           attack: (Math.floor(this.state.xp / 60) + 1) * 80 + damage
+                        })
+                     }
+                     break;
+                  case 'wall':
+
+                     break;
+                  case 'potion':
+                     copy[target] = copy[target].split(':')[0] + ':' + copy[target].split(':')[1] + ':'
+                     copy[target - 60] = copy[target - 60].split(':')[0] + ':' + copy[target - 60].split(':')[1] + ':' + 'player'
+                     this.setState({
+                        health: this.state.health + 70,
+                        log_img: 'http://vignette2.wikia.nocookie.net/minecraft-computer/images/3/30/Potion_of_Healing.png/revision/latest?cb=20140406170100',
+                        log: "You've taken 70 hp potion. Now your HP is " + (this.state.health + 70)
+                     })
+                     break;
+                  case '':
+                     copy[target] = copy[target].split(':')[0] + ':' + copy[target].split(':')[1] + ':'
+                     copy[target - 60] = copy[target - 60] + 'player'
+                     break;
+                  case 'enemy':
+                     let imglink = ''
+                     let enemyname = ''
+                     let enemytype = copy[target - 60].split(':')[3]
+                     switch (enemytype) {
+                        case '2':
+                           enemyname = 'Fish'
+                           imglink = 'https://media.giphy.com/media/29NpOANADahbO/giphy.gif'
+                           break;
+                        case '1':
+                           enemyname = 'Skeleton'
+                           imglink = 'http://orig03.deviantart.net/536a/f/2014/070/b/3/enemy_skeleton_by_madgharr-d7945fv.gif'
+                           break;
+                     }
+
+                     let damageincome = Number(Math.floor(Math.random() * 10) - 5) + Number(copy[target - 60].split(':')[5])
+                     damageincome = Number(damageincome)
+                     let damageoutcome = Math.floor(Math.random() * 10) - 5 + this.state.attack
+                     let yourhp = Number(this.state.health)
+                     let enemynexthp = Number(copy[target - 1].split(':')[4]) - damageoutcome
+                     damageincome = Number(damageincome)
+                     yourhp = Number(yourhp)
+
+                     if ((yourhp - damageincome) > 0) {
+                        if (enemynexthp > 0) {
+                           copy[target - 60] = copy[target - 60].split(':')[0] + ':' + copy[target - 60].split(':')[1] + ':' + copy[target - 60].split(':')[2] + ':' + copy[target - 60].split(':')[3] + ':' + enemynexthp + ':' + copy[target - 60].split(':')[5]
+                           this.setState({
+                              health: yourhp - damageincome,
+                              log: 'You attacked ' + enemyname + ' with ' + damageoutcome + ' attack. Now his hp is ' + enemynexthp + '. Now your hp is ' + (yourhp - damageincome),
+                              log_img: imglink,
+                           })
+                        } else {
+                           let xper = ''
+                           switch (enemyname) {
+                              case 'Fish':
+                                 xper = 9
+                                 break;
+                              case 'Skeleton':
+                                 xper = 5
+                                 break;
+                           }
+                           let weapondamage = 0
+                           switch (this.state.weapon) {
+                              case 'Club':
+                                 weapondamage = 20
+                                 break;
+                              case 'Dagger':
+                                 weapondamage = 50
+                                 break;
+                              case 'Battle axe':
+                                 weapondamage = 75
+                                 break;
+                              case 'Longsword':
+                                 weapondamage = 105
+                                 break;
+                              case 'Magic sword':
+                                 weapondamage = 130
+                                 break;
+                           }
+                           copy[target] = copy[target].split(':')[0] + ':' + copy[target].split(':')[1] + ':'
+                           copy[target - 60] = copy[target - 60].split(':')[0] + ':' + copy[target - 60].split(':')[1] + ':' + 'player'
+                           this.setState({
+                              health: yourhp - damageincome,
+                              log: 'You killed ' + enemyname + '. Now your hp is ' + (yourhp - damageincome) + '. You"ve achieved ' + xper + ' xp points.',
+                              log_img: imglink,
+                              xp: this.state.xp + xper,
+                              attack: ((Math.floor((this.state.xp + xper) / 60) + 1) * 80 + weapondamage)
+                           })
+                        }
+                     } else {
+                        alert('You died')
+                        this.clear()
+                        setTimeout(() => this.generatemap(), 100)
+                     }
+                     break;
+               }
+
+            }
+            if (interest == 0) {
+               this.setState({
+                  currentmap: copy
+               })
+            }
+            // up key pressed
+            break;
+         case 39:
+         case 68:
+            for (let x = 0; x < copy.length; x++) {
+               let locale = copy[x].split(':')[2]
+               if (locale == 'player' && Number(copy[x].split(':')[0]) < 59) {
+                  target = x
+               }
+            }
+            if (target !== '') {
+               let need = copy[target + 1].split(':')[2]
+               switch (need) {
+                  case 'boss':
+                     let damagein = Number(Math.floor(Math.random() * 10) - 5) + Number(copy[target + 1].split(':')[4])
+                     let damageout = Math.floor(Math.random() * 10) - 5 + this.state.attack
+                     let playerhp = Number(this.state.health)
+                     let bossnexthp = Number(copy[target + 1].split(':')[3]) - damageout
+                     if ((playerhp - damagein) > 0) {
+                        if (bossnexthp > 0) {
+                           copy[target + 1] = copy[target + 1].split(':')[0] + ':' + copy[target + 1].split(':')[1] + ':' + copy[target + 1].split(':')[2] + ':' + bossnexthp + ':' + copy[target + 1].split(':')[4]
+                           this.setState({
+                              health: playerhp - damagein,
+                              log: 'You attacked ' + 'Boss' + ' with ' + damageout + ' attack. Now his hp is ' + bossnexthp + '. Now your hp is ' + (playerhp - damagein),
+                              log_img: 'https://cdn2.scratch.mit.edu/get_image/user/3131893_90x90.png?v=1463891773.63',
+                           })
+                        } else {
+                           alert('You won this game. Congrats!!!! (Applause sounds)')
+                           this.restart()
+                        }
+                     } else {
+                        alert('You died from this cute boss. Die in peace and Try again! ^_^')
+                        this.restart()
+                     }
+
+                     break;
+                  case 'door':
+                     dungeon++
+                     interest = 1
+                     this.generatemap()
+                     if (dungeon == 2) {
+                        this.setState({
+                           log: 'Now you need to kill the Boss. He has 1300 HP and 200 attack, be aware with this guy. And try to find Magic sword.',
+                           log_img: 'https://cdn2.scratch.mit.edu/get_image/user/3131893_90x90.png?v=1463891773.63',
+                           dungeon: 3
+                        })
+                     } else {
+                        this.setState({
+                           log: 'Find the door to next level. Dont forget to find 2 weapons on this level.',
+                           log_img: 'http://vignette3.wikia.nocookie.net/pixeldungeon/images/3/36/Door.png/revision/latest?cb=20130530170051',
+                           dungeon: 2
+                        })
+                     }
+                     break;
+                  case 'chest':
+                     let funny = copy[target + 1].split(':')[3]
+                     copy[target] = copy[target].split(':')[0] + ':' + copy[target].split(':')[1] + ':'
+                     copy[target + 1] = copy[target + 1].split(':')[0] + ':' + copy[target + 1].split(':')[1] + ':' + 'player'
+                     let damage = 0
+                     switch (funny) {
+                        case 'Club':
+                           damage = 20
+                           break;
+                        case 'Dagger':
+                           damage = 50
+                           break;
+                        case 'Battle axe':
+                           damage = 75
+                           break;
+                        case 'Longsword':
+                           damage = 105
+                           break;
+                        case 'Magic sword':
+                           damage = 130
+                           break;
+                     }
+                     if (damage < (this.state.attack - 80 * (Math.floor(this.state.xp / 60) + 1))) {
+                        let kek = 'Not increased because you have better weapon'
+                        this.setState({
+                           weapon: this.state.weapon,
+                           log_img: 'http://cheerfulghost.com/assets/art/closed_chest-13c599d705338d4d97dadcac6ceff516.png',
+                           log: "You've found a " + funny + " in a chest. Damage: " + kek,
+                           attack: this.state.attack
+                        })
+                     } else {
+                        let kek = '+ ' + damage
+                        this.setState({
+                           weapon: funny,
+                           log_img: 'http://cheerfulghost.com/assets/art/closed_chest-13c599d705338d4d97dadcac6ceff516.png',
+                           log: "You've found a " + funny + " in a chest. Damage: " + kek,
+                           attack: (Math.floor(this.state.xp / 60) + 1) * 80 + damage
+                        })
+                     }
+                     break;
+                  case 'wall':
+
+                     break;
+                  case 'potion':
+                     copy[target] = copy[target].split(':')[0] + ':' + copy[target].split(':')[1] + ':'
+                     copy[target + 1] = copy[target + 1].split(':')[0] + ':' + copy[target + 1].split(':')[1] + ':' + 'player'
+                     this.setState({
+                        health: this.state.health + 70,
+                        log_img: 'http://vignette2.wikia.nocookie.net/minecraft-computer/images/3/30/Potion_of_Healing.png/revision/latest?cb=20140406170100',
+                        log: "You've taken 70 hp potion. Now your HP is " + (this.state.health + 70)
+                     })
+                     break;
+                  case '':
+                     copy[target] = copy[target].split(':')[0] + ':' + copy[target].split(':')[1] + ':'
+                     copy[target + 1] = copy[target + 1] + 'player'
+                     break;
+                  case 'enemy':
+                     let imglink = ''
+                     let enemyname = ''
+                     let enemytype = copy[target + 1].split(':')[3]
+                     switch (enemytype) {
+                        case '2':
+                           enemyname = 'Fish'
+                           imglink = 'https://media.giphy.com/media/29NpOANADahbO/giphy.gif'
+                           break;
+                        case '1':
+                           enemyname = 'Skeleton'
+                           imglink = 'http://orig03.deviantart.net/536a/f/2014/070/b/3/enemy_skeleton_by_madgharr-d7945fv.gif'
+                           break;
+                     }
+
+                     let damageincome = Number(Math.floor(Math.random() * 10) - 5) + Number(copy[target + 1].split(':')[5])
+                     damageincome = Number(damageincome)
+                     let damageoutcome = Math.floor(Math.random() * 10) - 5 + this.state.attack
+                     let yourhp = Number(this.state.health)
+                     let enemynexthp = Number(copy[target + 1].split(':')[4]) - damageoutcome
+                     damageincome = Number(damageincome)
+                     yourhp = Number(yourhp)
+
+                     if ((yourhp - damageincome) > 0) {
+                        if (enemynexthp > 0) {
+                           copy[target + 1] = copy[target + 1].split(':')[0] + ':' + copy[target + 1].split(':')[1] + ':' + copy[target + 1].split(':')[2] + ':' + copy[target + 1].split(':')[3] + ':' + enemynexthp + ':' + copy[target + 1].split(':')[5]
+                           this.setState({
+                              health: yourhp - damageincome,
+                              log: 'You attacked ' + enemyname + ' with ' + damageoutcome + ' attack. Now his hp is ' + enemynexthp + '. Now your hp is ' + (yourhp - damageincome),
+                              log_img: imglink,
+                           })
+                        } else {
+                           let xper = ''
+                           switch (enemyname) {
+                              case 'Fish':
+                                 xper = 9
+                                 break;
+                              case 'Skeleton':
+                                 xper = 5
+                                 break;
+                           }
+                           let weapondamage = 0
+                           switch (this.state.weapon) {
+                              case 'Club':
+                                 weapondamage = 20
+                                 break;
+                              case 'Dagger':
+                                 weapondamage = 50
+                                 break;
+                              case 'Battle axe':
+                                 weapondamage = 75
+                                 break;
+                              case 'Longsword':
+                                 weapondamage = 105
+                                 break;
+                              case 'Magic sword':
+                                 weapondamage = 130
+                                 break;
+                           }
+                           copy[target] = copy[target].split(':')[0] + ':' + copy[target].split(':')[1] + ':'
+                           copy[target + 1] = copy[target + 1].split(':')[0] + ':' + copy[target + 1].split(':')[1] + ':' + 'player'
+                           this.setState({
+                              health: yourhp - damageincome,
+                              log: 'You killed ' + enemyname + '. Now your hp is ' + (yourhp - damageincome) + '. You"ve achieved ' + xper + ' xp points.',
+                              log_img: imglink,
+                              xp: this.state.xp + xper,
+                              attack: ((Math.floor((this.state.xp + xper) / 60) + 1) * 80 + weapondamage)
+                           })
+                        }
+                     } else {
+                        alert('You died')
+                        this.clear()
+                        setTimeout(() => this.generatemap(), 100)
+                     }
+                     break;
+               }
+
+            }
+            if (interest == 0) {
+               this.setState({
+                  currentmap: copy
+               })
+            }
+            // right key pressed
+            break;
+         case 40:
+         case 83:
+            for (let x = 0; x < copy.length; x++) {
+               let locale = copy[x].split(':')[2]
+               if (locale == 'player' && Number(copy[x].split(':')[1]) < 32) {
+                  target = x
+               }
+            }
+            if (target !== '') {
+               let need = copy[target + 60].split(':')[2]
+               switch (need) {
+                  case 'boss':
+                     let damagein = Number(Math.floor(Math.random() * 10) - 5) + Number(copy[target + 60].split(':')[4])
+                     let damageout = Math.floor(Math.random() * 10) - 5 + this.state.attack
+                     let playerhp = Number(this.state.health)
+                     let bossnexthp = Number(copy[target + 60].split(':')[3]) - damageout
+                     if ((playerhp - damagein) > 0) {
+                        if (bossnexthp > 0) {
+                           copy[target + 60] = copy[target + 60].split(':')[0] + ':' + copy[target + 60].split(':')[1] + ':' + copy[target + 60].split(':')[2] + ':' + bossnexthp + ':' + copy[target + 60].split(':')[4]
+                           this.setState({
+                              health: playerhp - damagein,
+                              log: 'You attacked ' + 'Boss' + ' with ' + damageout + ' attack. Now his hp is ' + bossnexthp + '. Now your hp is ' + (playerhp - damagein),
+                              log_img: 'https://cdn2.scratch.mit.edu/get_image/user/3131893_90x90.png?v=1463891773.63',
+                           })
+                        } else {
+                           alert('You won this game. Congrats!!!! (Applause sounds)')
+                           this.restart()
+                        }
+                     } else {
+                        alert('You died from this cute boss. Die in peace and Try again! ^_^')
+                        this.restart()
+                     }
+
+                     break;
+                  case 'door':
+                     dungeon++
+                     interest = 1
+                     this.generatemap()
+                     if (dungeon == 2) {
+                        this.setState({
+                           log: 'Now you need to kill the Boss. He has 1300 HP and 200 attack, be aware with this guy. And try to find Magic sword.',
+                           log_img: 'https://cdn2.scratch.mit.edu/get_image/user/3131893_90x90.png?v=1463891773.63',
+                           dungeon: 3
+                        })
+                     } else {
+                        this.setState({
+                           log: 'Find the door to next level. Dont forget to find 2 weapons on this level.',
+                           log_img: 'http://vignette3.wikia.nocookie.net/pixeldungeon/images/3/36/Door.png/revision/latest?cb=20130530170051',
+                           dungeon: 2
+                        })
+                     }
+                     break;
+                  case 'chest':
+                     let funny = copy[target + 60].split(':')[3]
+                     copy[target] = copy[target].split(':')[0] + ':' + copy[target].split(':')[1] + ':'
+                     copy[target + 60] = copy[target + 60].split(':')[0] + ':' + copy[target + 60].split(':')[1] + ':' + 'player'
+                     let damage = 0
+                     switch (funny) {
+                        case 'Club':
+                           damage = 20
+                           break;
+                        case 'Dagger':
+                           damage = 50
+                           break;
+                        case 'Battle axe':
+                           damage = 75
+                           break;
+                        case 'Longsword':
+                           damage = 105
+                           break;
+                        case 'Magic sword':
+                           damage = 130
+                           break;
+                     }
+                     if (damage < (this.state.attack - 80 * (Math.floor(this.state.xp / 60) + 1))) {
+                        let kek = 'Not increased because you have better weapon'
+                        this.setState({
+                           weapon: this.state.weapon,
+                           log_img: 'http://cheerfulghost.com/assets/art/closed_chest-13c599d705338d4d97dadcac6ceff516.png',
+                           log: "You've found a " + funny + " in a chest. Damage: " + kek,
+                           attack: this.state.attack
+                        })
+                     } else {
+                        let kek = '+ ' + damage
+                        this.setState({
+                           weapon: funny,
+                           log_img: 'http://cheerfulghost.com/assets/art/closed_chest-13c599d705338d4d97dadcac6ceff516.png',
+                           log: "You've found a " + funny + " in a chest. Damage: " + kek,
+                           attack: (Math.floor(this.state.xp / 60) + 1) * 80 + damage
+                        })
+                     }
+
+                     break;
+                  case 'wall':
+
+                     break;
+                  case 'potion':
+                     copy[target] = copy[target].split(':')[0] + ':' + copy[target].split(':')[1] + ':'
+                     copy[target + 60] = copy[target + 60].split(':')[0] + ':' + copy[target + 60].split(':')[1] + ':' + 'player'
+                     this.setState({
+                        health: this.state.health + 70,
+                        log_img: 'http://vignette2.wikia.nocookie.net/minecraft-computer/images/3/30/Potion_of_Healing.png/revision/latest?cb=20140406170100',
+                        log: "You've taken 70 hp potion. Now your HP is " + (this.state.health + 70)
+                     })
+                     break;
+                  case '':
+                     copy[target] = copy[target].split(':')[0] + ':' + copy[target].split(':')[1] + ':'
+                     copy[target + 60] = copy[target + 60] + 'player'
+                     break;
+                  case 'enemy':
+                     let imglink = ''
+                     let enemyname = ''
+                     let enemytype = copy[target + 60].split(':')[3]
+                     switch (enemytype) {
+                        case '2':
+                           enemyname = 'Fish'
+                           imglink = 'https://media.giphy.com/media/29NpOANADahbO/giphy.gif'
+                           break;
+                        case '1':
+                           enemyname = 'Skeleton'
+                           imglink = 'http://orig03.deviantart.net/536a/f/2014/070/b/3/enemy_skeleton_by_madgharr-d7945fv.gif'
+                           break;
+                     }
+
+                     let damageincome = Number(Math.floor(Math.random() * 10) - 5) + Number(copy[target + 60].split(':')[5])
+                     damageincome = Number(damageincome)
+                     let damageoutcome = Math.floor(Math.random() * 10) - 5 + this.state.attack
+                     let yourhp = Number(this.state.health)
+                     let enemynexthp = Number(copy[target + 60].split(':')[4]) - damageoutcome
+                     damageincome = Number(damageincome)
+                     yourhp = Number(yourhp)
+
+                     if ((yourhp - damageincome) > 0) {
+                        if (enemynexthp > 0) {
+                           copy[target + 60] = copy[target + 60].split(':')[0] + ':' + copy[target + 60].split(':')[1] + ':' + copy[target + 60].split(':')[2] + ':' + copy[target + 60].split(':')[3] + ':' + enemynexthp + ':' + copy[target + 60].split(':')[5]
+                           this.setState({
+                              health: yourhp - damageincome,
+                              log: 'You attacked ' + enemyname + ' with ' + damageoutcome + ' attack. Now his hp is ' + enemynexthp + '. Now your hp is ' + (yourhp - damageincome),
+                              log_img: imglink,
+                           })
+                        } else {
+                           let xper = ''
+                           switch (enemyname) {
+                              case 'Fish':
+                                 xper = 9
+                                 break;
+                              case 'Skeleton':
+                                 xper = 5
+                                 break;
+                           }
+                           let weapondamage = 0
+                           switch (this.state.weapon) {
+                              case 'Club':
+                                 weapondamage = 20
+                                 break;
+                              case 'Dagger':
+                                 weapondamage = 50
+                                 break;
+                              case 'Battle axe':
+                                 weapondamage = 75
+                                 break;
+                              case 'Longsword':
+                                 weapondamage = 105
+                                 break;
+                              case 'Magic sword':
+                                 weapondamage = 130
+                                 break;
+                           }
+                           copy[target] = copy[target].split(':')[0] + ':' + copy[target].split(':')[1] + ':'
+                           copy[target + 60] = copy[target + 60].split(':')[0] + ':' + copy[target + 60].split(':')[1] + ':' + 'player'
+                           this.setState({
+                              health: yourhp - damageincome,
+                              log: 'You killed ' + enemyname + '. Now your hp is ' + (yourhp - damageincome) + '. You"ve achieved ' + xper + ' xp points.',
+                              log_img: imglink,
+                              xp: this.state.xp + xper,
+                              attack: ((Math.floor((this.state.xp + xper) / 60) + 1) * 80 + weapondamage)
+                           })
+                        }
+                     } else {
+                        alert('You died')
+                        this.clear()
+                        setTimeout(() => this.generatemap(), 100)
+                     }
+                     break;
+               }
+
+            }
+            if (interest == 0) {
+               this.setState({
+                  currentmap: copy
+               })
+            }
+            // down key pressed
+            break;
+      }
+   }
+   handledark() {
+      this.setState({
+         showshadow: !this.state.showshadow
+      })
+   }
+   clear() {
+      dungeon = 0
+      this.setState({
+         currentmap: [],
+         rooms: [{
+            a: '0:0:',
+            b: '59:0:',
+            c: '0:32:',
+            d: '59:32:'
+         }],
+         showshadow: true,
+         health: 300,
+         attack: 80,
+         xp: 0,
+         dungeon: 1,
+         weapon: 'Knuckles',
+         log: 'Find the door to next level. Dont forget to find 2 weapons on this level.',
+         log_img: 'http://vignette3.wikia.nocookie.net/pixeldungeon/images/3/36/Door.png/revision/latest?cb=20130530170051'
+      })
+   }
+   generatemap() {
+      let mean = []
+      for (let y = 0; y < 33; y++) {
+         for (let x = 0; x < 60; x++) {
+            let kek = ''
+            mean.push(x + ':' + y + ':' + kek)
+         }
+      }
+      let roomcopy = [{
+         a: '0:0:',
+         b: '59:0:',
+         c: '0:32:',
+         d: '59:32:'
+      }]
+      for (var i = 0; i < 4; i++) {
+         let newpaste = []
+         for (var x = 0; x < roomcopy.length; x++) {
+            let scale = Math.floor((Math.random() / 3 + 0.3) * 100) / 100
+
+            let copy = roomcopy[x]
+            let where = Math.floor(Math.random() * 3)
+            let highy = Number(roomcopy[x].a.split(':')[1])
+            let lowy = Number(roomcopy[x].c.split(':')[1])
+            let leftx = Number(roomcopy[x].a.split(':')[0])
+            let rightx = Number(roomcopy[x].b.split(':')[0])
+
+            let a1, b1, c1, d1, a2, b2, c2, d2
+            if (where !== 0) {
+               let dis = rightx - leftx
+               if (dis > 6) {
+                  dis = Math.floor(scale * dis)
+                  a1 = leftx + ':' + highy + ':'
+                  b1 = (dis + leftx) + ':' + highy + ':'
+                  c1 = leftx + ':' + lowy + ':'
+                  d1 = (dis + leftx) + ':' + lowy + ':'
+                  newpaste.push({
+                     a: a1,
+                     b: b1,
+                     c: c1,
+                     d: d1
+                  })
+                  a2 = (dis + leftx) + ':' + highy + ':'
+                  b2 = rightx + ':' + highy + ':'
+                  c2 = (dis + leftx) + ':' + lowy + ':'
+                  d2 = rightx + ':' + lowy + ':'
+                  newpaste.push({
+                     a: a2,
+                     b: b2,
+                     c: c2,
+                     d: d2
+                  })
+               }
+            } else {
+               let dis = lowy - highy
+               if (dis > 6) {
+                  dis = Math.floor(scale * dis)
+                  a1 = leftx + ':' + highy + ':'
+                  b1 = rightx + ':' + highy + ':'
+                  c1 = leftx + ':' + (dis + highy) + ':'
+                  d1 = rightx + ':' + (dis + highy) + ':'
+                  newpaste.push({
+                     a: a1,
+                     b: b1,
+                     c: c1,
+                     d: d1
+                  })
+                  a2 = leftx + ':' + (dis + highy) + ':'
+                  b2 = rightx + ':' + (dis + highy) + ':'
+                  c2 = leftx + ':' + lowy + ':'
+                  d2 = rightx + ':' + lowy + ':'
+                  newpaste.push({
+                     a: a2,
+                     b: b2,
+                     c: c2,
+                     d: d2
+                  })
+               }
+            }
+         }
+         roomcopy = newpaste
+      }
+      let copy = mean
+      let rooms = roomcopy
+      for (var x = 0; x < rooms.length; x++) {
+         let lowery = Number(rooms[x].a.split(':')[1])
+         let uppery = Number(rooms[x].c.split(':')[1])
+         let leftx = Number(rooms[x].a.split(':')[0])
+         let rightx = Number(rooms[x].b.split(':')[0])
+         for (var y = 0; y < copy.length; y++) {
+            let localex = Number(copy[y].split(':')[0])
+            let localey = Number(copy[y].split(':')[1])
+            if (copy[y].split(':')[2] !== 'wall') {
+               if (localex >= leftx && localex <= rightx && localey == uppery) {
+                  copy[y] = copy[y] + 'wall'
+               } else if (localex >= leftx && localex <= rightx && localey == lowery) {
+                  copy[y] = copy[y] + 'wall'
+               } else if (localey >= lowery && localey <= uppery && localex == leftx) {
+                  copy[y] = copy[y] + 'wall'
+               } else if (localey >= lowery && localey <= uppery && localex == rightx) {
+                  copy[y] = copy[y] + 'wall'
+               }
+            }
+         }
+      }
+
+      copy = copy
+      for (var x = 0; x < rooms.length; x++) {
+         let a = rooms[x].a
+         let b = rooms[x].b
+         let c = rooms[x].c
+         let d = rooms[x].d
+         let top = (Number(b.split(':')[0]) - Number(a.split(':')[0])) - 2
+         top = Math.floor(Math.random() * top) + 1
+         top = (top + Number(a.split(':')[0])) + ':' + b.split(':')[1] + ':'
+         let bottom = (Number(d.split(':')[0]) - Number(c.split(':')[0])) - 2
+         bottom = Math.floor(Math.random() * bottom) + 1
+         bottom = (bottom + Number(c.split(':')[0])) + ':' + d.split(':')[1] + ':'
+
+         let left = (Number(c.split(':')[1]) - Number(a.split(':')[1])) - 2
+         left = Math.floor(Math.random() * left) + 1
+         left = a.split(':')[0] + ':' + (left + Number(a.split(':')[1])) + ':'
+
+         let right = (Number(d.split(':')[1]) - Number(b.split(':')[1])) - 2
+         right = Math.floor(Math.random() * right) + 1
+         right = b.split(':')[0] + ':' + (right + Number(b.split(':')[1])) + ':'
+         for (var y = 0; y < copy.length; y++) {
+            let locale = copy[y].split(':')[0] + ':' + copy[y].split(':')[1] + ':'
+            if (locale == top) {
+               copy[y] = top
+            } else if (locale == bottom) {
+               copy[y] = bottom
+            } else if (locale == left) {
+               copy[y] = left
+            } else if (locale == right) {
+               copy[y] = right
+            }
+
+         }
+      }
+
+      let sorted = []
+      for (var x = 0; x < copy.length; x++) {
+         if (copy[x].split(':')[2] !== 'wall') {
+            sorted.push(copy[x])
+         }
+      }
+      let place = Math.floor(Math.random() * sorted.length)
+      let target = sorted[place]
+
+      for (var y = 0; y < copy.length; y++) {
+
+             
+         let locale = copy[y].split(':')[0] + ':' + copy[y].split(':')[1] + ':'
+         if (locale == target) {
+            copy[y] = target + 'player'
+         }
+      }
+
+      let num = 0
+      if (dungeon == 0 || dungeon == 1) {
+         num = 2
+      } else {
+         num = 1
+      }
+      for (let z = 0; z < num; z++) {
+         sorted = []
+         for (var x = 0; x < copy.length; x++) {
+            if (copy[x].split(':')[2] !== 'wall' && copy[x].split(':')[2] !== 'chest' && copy[x].split(':')[2] !== 'player') {
+               sorted.push(copy[x])
+            }
+         }
+
+         let place = Math.floor(Math.random() * sorted.length)
+         let target = sorted[place]
+         for (var y = 0; y < copy.length; y++) {
+
+                
+            let locale = copy[y].split(':')[0] + ':' + copy[y].split(':')[1] + ':'
+            if (locale == target) {
+               let extra = ''
+               if (dungeon == 0) {
+                  if (type < 2) {
+                     switch (type) {
+                        case 0:
+                           extra = 'Club'
+                           break;
+                        case 1:
+                           extra = 'Dagger'
+                           break;
+                     }
+                     type++
+                  }
+               } else if (dungeon == 1) {
+                  if (type < 4) {
+                     switch (type) {
+                        case 2:
+                           extra = 'Battle axe'
+                           break;
+                        case 3:
+                           extra = 'Longsword'
+                           break;
+                     }
+                     type++
+                  }
+               } else if (dungeon == 2) {
+                  if (type < 5) {
+                     switch (type) {
+                        case 4:
+                           extra = 'Magic sword'
+                           break;
+                     }
+                     type++
+                  }
+               }
+               copy[y] = target + 'chest:' + extra
+            }
+         }
+      }
+
+      for (let z = 0; z < 25; z++) {
+         sorted = []
+         for (var x = 0; x < copy.length; x++) {
+            if (copy[x].split(':')[2] !== 'wall' && copy[x].split(':')[2] !== 'chest' && copy[x].split(':')[2] !== 'player' && copy[x].split(':')[2] !== 'enemy') {
+               sorted.push(copy[x])
+            }
+         }
+
+         let place = Math.floor(Math.random() * sorted.length)
+         let target = sorted[place]
+         for (var y = 0; y < copy.length; y++) {
+
+                
+            let locale = copy[y].split(':')[0] + ':' + copy[y].split(':')[1] + ':'
+            if (locale == target) {
+               let extra = Math.floor(Math.random() * 2)
+               let lol = ''
+               if (extra == 0) {
+                  lol = '1:150:20'
+               } else {
+                  lol = '2:300:30'
+               }
+               copy[y] = target + 'enemy:' + lol
+               console.log(copy[y])
+            }
+         }
+      }
+      for (let z = 0; z < 25; z++) {
+         sorted = []
+         for (var x = 0; x < copy.length; x++) {
+            if (copy[x].split(':')[2] !== 'wall' && copy[x].split(':')[2] !== 'chest' && copy[x].split(':')[2] !== 'player' && copy[x].split(':')[2] !== 'enemy' && copy[x].split(':')[2] !== 'potion') {
+               sorted.push(copy[x])
+            }
+         }
+
+         let place = Math.floor(Math.random() * sorted.length)
+         let target = sorted[place]
+         for (var y = 0; y < copy.length; y++) {
+
+                
+            let locale = copy[y].split(':')[0] + ':' + copy[y].split(':')[1] + ':'
+            if (locale == target) {
+               copy[y] = target + 'potion'
+               console.log(copy[y])
+            }
+         }
+      }
+
+      sorted = []
+      for (var x = 0; x < copy.length; x++) {
+         if (copy[x].split(':')[2] !== 'wall' && copy[x].split(':')[2] !== 'chest' && copy[x].split(':')[2] !== 'player' && copy[x].split(':')[2] !== 'enemy' && copy[x].split(':')[2] !== 'potion') {
+            sorted.push(copy[x])
+         }
+      }
+
+      place = Math.floor(Math.random() * sorted.length)
+      target = sorted[place]
+      for (var y = 0; y < copy.length; y++) {
+
+             
+         let locale = copy[y].split(':')[0] + ':' + copy[y].split(':')[1] + ':'
+         if (locale == target) {
+            if (dungeon == 0 || dungeon == 1) {
+               copy[y] = target + 'door'
+               console.log(copy[y])
+            } else {
+               copy[y] = target + 'boss:1300:200'
+               console.log(copy[y])
+            }
+         }
+      }
+
+      this.setState({
+         currentmap: copy
+      })
+   }
+   render() {
+      const map = this.state.currentmap.map((item, i) => {
+         let copy = item.split(':')
+         let value = copy[2];
+         let extra = ''
+         switch (value) {
+            case 'wall':
+               extra = 'wall'
+               break;
+            case 'player':
+               extra = 'player'
+               break;
+            case 'chest':
+               extra = 'chest'
+               break;
+            case 'enemy':
+               let xx
+               if (copy[3] == '2') {
+                  xx = '2'
+               } else {
+                  xx = '1'
+               }
+               extra = 'enemy' + xx
+               break;
+            case 'potion':
+               extra = 'potion'
+               break;
+            case 'door':
+               extra = 'door'
+               break;
+            case 'boss':
+               extra = 'boss'
+               break;
+         }
+
+             
+         return <div key={i} className={"cell"+' '+extra}></div>
+      })
+      let shadowarray = this.state.currentmap
+      let place = ''
+      let row = ''
+      for (var x = 0; x < shadowarray.length; x++) {
+         let value = shadowarray[x].split(':')[2]
+         if (value == 'player') {
+            place = x
+            row = Number(shadowarray[x].split(':')[1])
+         }
+      }
+      const shadowlinux = this.state.currentmap.map((item, i) => {
+         let extra = 'chess'
+         if ((i > place - 243 && i < place - 237 && item.split(':')[1] == (row - 4).toString()) || (i > place - 184 && i < place - 176 && item.split(':')[1] == (row - 3).toString()) || (i > place - 125 && i < place - 115 && item.split(':')[1] == (row - 2).toString()) || (i > place - 65 && i < place - 55 && item.split(':')[1] == (row - 1).toString()) || (i > place - 5 && i < place + 5 && item.split(':')[1] == row) || (i < place + 65 && i > place + 55 && item.split(':')[1] == (row + 1).toString()) || (i < place + 125 && i > place + 115 && item.split(':')[1] == (row + 2).toString()) || (i < place + 184 && i > place + 176 && item.split(':')[1] == (row + 3).toString()) || (i < place + 243 && i > place + 237 && item.split(':')[1] == (row + 4).toString())) {
+            extra = ''
+         }
+         return <div key={i} className={'shadowcell' + ' '+ extra}></div>
+      })
+      const shadow = this.state.currentmap.map((item, i) => {
+         let extra = 'chess'
+         if ((i > place - 243 && i < place - 237 && item.split(':')[1] == (row - 4).toString()) || (i > place - 184 && i < place - 176 && item.split(':')[1] == (row - 3).toString()) || (i > place - 125 && i < place - 115 && item.split(':')[1] == (row - 2).toString()) || (i > place - 65 && i < place - 55 && item.split(':')[1] == (row - 1).toString()) || (i > place - 5 && i < place + 5 && item.split(':')[1] == row) || (i < place + 65 && i > place + 55 && item.split(':')[1] == (row + 1).toString()) || (i < place + 125 && i > place + 115 && item.split(':')[1] == (row + 2).toString()) || (i < place + 184 && i > place + 176 && item.split(':')[1] == (row + 3).toString()) || (i < place + 243 && i > place + 237 && item.split(':')[1] == (row + 4).toString())) {
+            extra = ''
+         } else if (item.split(':')[2] !== 'wall') {
+            extra = 'cell'
+         } else {
+            extra = 'wall'
+         }
+         return <div key={i} className={'shadowcell' + ' '+ extra}></div>
+      })
+      const info = <div>Health: {this.state.health}<br/>XP to next level: {60-this.state.xp%60}<br/>Attack: {this.state.attack}<br/>Weapon: {this.state.weapon}<br/>Dungeon: {this.state.dungeon}</div>
+
+      const log = <div id='log-info' className="text-left">{this.state.log}</div>
+      const image = <img src={this.state.log_img} id='log_img'/>
+      return (<div><div id='playerbox'>
+            <div id="player" className='row text-left'>
+            <div id='playerimage'></div>
+               <div id='playerinfo'>{info}</div><div id='lvlinfo' className="text-center">Level: {Math.floor(this.state.xp/60)+1}</div></div><div id='log'>{(this.state.log_img!='')?image: null}{log}<button className="btn btn-warning" onClick={()=>this.handledark()} id="toggle"><span className="glyphicon glyphicon-flag"></span> Toggle Darkness</button><button className="btn btn-primary" onClick={()=>this.restart()} id="restart"><span className="glyphicon glyphicon-repeat"></span> Restart Game</button><p id='title'>React Roguelike by <a href='https://www.github.com/zooll8' target="_blank">Zooll</a></p></div></div>
+            <div id="shadowlinux">{this.state.showshadow ?shadowlinux:null}</div><div id="shadow">{this.state.showshadow ?shadow:null}</div><div id="main">
+              {map}
+              </div>
+            <br/>
+         </div>)
+   }
+}
+ReactDOM.render(<App/>, document.querySelector("#root"))
