@@ -75,6 +75,9 @@ class App extends React.Component {
                      } else {
                         alert('You died from this cute boss. Die in peace and Try again! ^_^')
                         this.restart()
+                        this.setState({
+                           weapon: 'Knuckles'
+                        })
                      }
 
                      break;
@@ -268,6 +271,9 @@ class App extends React.Component {
                      } else {
                         alert('You died from this cute boss. Die in peace and Try again! ^_^')
                         this.restart()
+                        this.setState({
+                           weapon: 'Knuckles'
+                        })
                      }
 
                      break;
@@ -461,6 +467,9 @@ class App extends React.Component {
                      } else {
                         alert('You died from this cute boss. Die in peace and Try again! ^_^')
                         this.restart()
+                        this.setState({
+                           weapon: 'Knuckles'
+                        })
                      }
 
                      break;
@@ -654,6 +663,9 @@ class App extends React.Component {
                      } else {
                         alert('You died from this cute boss. Die in peace and Try again! ^_^')
                         this.restart()
+                        this.setState({
+                           weapon: 'Knuckles'
+                        })
                      }
 
                      break;
@@ -826,6 +838,7 @@ class App extends React.Component {
    }
    clear() {
       dungeon = 0
+      type=0
       this.setState({
          currentmap: [],
          rooms: [{
@@ -1024,6 +1037,7 @@ class App extends React.Component {
             let locale = copy[y].split(':')[0] + ':' + copy[y].split(':')[1] + ':'
             if (locale == target) {
                let extra = ''
+               console.log(dungeon)
                if (dungeon == 0) {
                   if (type < 2) {
                      switch (type) {
@@ -1059,6 +1073,7 @@ class App extends React.Component {
                   }
                }
                copy[y] = target + 'chest:' + extra
+               console.log(copy[y])
             }
          }
       }

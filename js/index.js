@@ -97,6 +97,9 @@ var App = function (_React$Component) {
                      } else {
                         alert('You died from this cute boss. Die in peace and Try again! ^_^');
                         this.restart();
+                        this.setState({
+                           weapon: 'Knuckles'
+                        });
                      }
 
                      break;
@@ -291,6 +294,9 @@ var App = function (_React$Component) {
                      } else {
                         alert('You died from this cute boss. Die in peace and Try again! ^_^');
                         this.restart();
+                        this.setState({
+                           weapon: 'Knuckles'
+                        });
                      }
 
                      break;
@@ -485,6 +491,9 @@ var App = function (_React$Component) {
                      } else {
                         alert('You died from this cute boss. Die in peace and Try again! ^_^');
                         this.restart();
+                        this.setState({
+                           weapon: 'Knuckles'
+                        });
                      }
 
                      break;
@@ -679,6 +688,9 @@ var App = function (_React$Component) {
                      } else {
                         alert('You died from this cute boss. Die in peace and Try again! ^_^');
                         this.restart();
+                        this.setState({
+                           weapon: 'Knuckles'
+                        });
                      }
 
                      break;
@@ -854,6 +866,7 @@ var App = function (_React$Component) {
 
    App.prototype.clear = function clear() {
       dungeon = 0;
+      type = 0;
       this.setState({
          currentmap: [],
          rooms: [{
@@ -1057,6 +1070,7 @@ var App = function (_React$Component) {
             var locale = copy[y].split(':')[0] + ':' + copy[y].split(':')[1] + ':';
             if (locale == _target) {
                var extra = '';
+               console.log(dungeon);
                if (dungeon == 0) {
                   if (type < 2) {
                      switch (type) {
@@ -1092,6 +1106,7 @@ var App = function (_React$Component) {
                   }
                }
                copy[y] = _target + 'chest:' + extra;
+               console.log(copy[y]);
             }
          }
       }
