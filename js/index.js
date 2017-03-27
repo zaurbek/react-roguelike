@@ -8,6 +8,12 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var dungeon = 0;
 var type = 0;
+var skeletonLink = "https://dl.dropboxusercontent.com/s/qzkf7oo3613bu2z/enemy_skeleton_by_madgharr-d7945fv.gif.crdownload?dl=0";
+var chestLink = 'https://dl.dropboxusercontent.com/s/3sce63c0miad68u/closed_chest-13c599d705338d4d97dadcac6ceff516.png?dl=0';
+var potionLink = 'https://dl.dropboxusercontent.com/s/xve6tm8ptpbuo1b/Potion_of_Healing.png?dl=0';
+var fishLink = 'https://dl.dropboxusercontent.com/s/rmfw52duocroi7v/giphy.gif.crdownload?dl=0';
+var doorLink = 'https://dl.dropboxusercontent.com/s/tu71eu9zmlwamgd/Door.png?dl=0';
+var bossLink = 'https://dl.dropboxusercontent.com/s/av1rei7w2w75i2i/puppix__corgi_by_ronnieraccoon-d4687hc.gif.crdownload?dl=0';
 
 var App = function (_React$Component) {
    _inherits(App, _React$Component);
@@ -32,7 +38,7 @@ var App = function (_React$Component) {
          dungeon: 1,
          weapon: 'Knuckles',
          log: 'Find the door to next level. Dont forget to find 2 weapons on this level.',
-         log_img: 'http://vignette3.wikia.nocookie.net/pixeldungeon/images/3/36/Door.png/revision/latest?cb=20130530170051'
+         log_img: doorLink
       };
       return _this;
    }
@@ -82,7 +88,7 @@ var App = function (_React$Component) {
                            this.setState({
                               health: playerhp - damagein,
                               log: 'You attacked ' + 'Boss' + ' with ' + damageout + ' attack. Now his hp is ' + bossnexthp + '. Now your hp is ' + (playerhp - damagein),
-                              log_img: 'https://cdn2.scratch.mit.edu/get_image/user/3131893_90x90.png?v=1463891773.63'
+                              log_img: bossLink
                            });
                         } else {
                            alert('You won this game. Congrats!!!! (Applause sounds)');
@@ -101,13 +107,13 @@ var App = function (_React$Component) {
                      if (dungeon == 2) {
                         this.setState({
                            log: 'Now you need to kill the Boss. He has 1300 HP and 200 attack, be aware with this guy. And try to find Magic sword.',
-                           log_img: 'https://cdn2.scratch.mit.edu/get_image/user/3131893_90x90.png?v=1463891773.63',
+                           log_img: bossLink,
                            dungeon: 3
                         });
                      } else {
                         this.setState({
                            log: 'Find the door to next level. Dont forget to find 2 weapons on this level.',
-                           log_img: 'http://vignette3.wikia.nocookie.net/pixeldungeon/images/3/36/Door.png/revision/latest?cb=20130530170051',
+                           log_img: doorLink,
                            dungeon: 2
                         });
                      }
@@ -120,7 +126,7 @@ var App = function (_React$Component) {
                      copy[target - 1] = copy[target - 1].split(':')[0] + ':' + copy[target - 1].split(':')[1] + ':' + 'player';
                      this.setState({
                         health: this.state.health + 70,
-                        log_img: 'http://vignette2.wikia.nocookie.net/minecraft-computer/images/3/30/Potion_of_Healing.png/revision/latest?cb=20140406170100',
+                        log_img: potionLink,
                         log: "You've taken 70 hp potion. Now your HP is " + (this.state.health + 70)
                      });
                      break;
@@ -154,7 +160,7 @@ var App = function (_React$Component) {
                         var kek = 'Not increased because you have better weapon';
                         this.setState({
                            weapon: this.state.weapon,
-                           log_img: 'http://cheerfulghost.com/assets/art/closed_chest-13c599d705338d4d97dadcac6ceff516.png',
+                           log_img: chestLink,
                            log: "You've found a " + funny + " in a chest. Damage: " + kek,
                            attack: this.state.attack
                         });
@@ -162,7 +168,7 @@ var App = function (_React$Component) {
                         var kek = '+ ' + damage;
                         this.setState({
                            weapon: funny,
-                           log_img: 'http://cheerfulghost.com/assets/art/closed_chest-13c599d705338d4d97dadcac6ceff516.png',
+                           log_img: chestLink,
                            log: "You've found a " + funny + " in a chest. Damage: " + kek,
                            attack: (Math.floor(this.state.xp / 60) + 1) * 80 + damage
                         });
@@ -175,11 +181,11 @@ var App = function (_React$Component) {
                      switch (enemytype) {
                         case '2':
                            enemyname = 'Fish';
-                           imglink = 'https://media.giphy.com/media/29NpOANADahbO/giphy.gif';
+                           imglink = fishLink;
                            break;
                         case '1':
                            enemyname = 'Skeleton';
-                           imglink = 'http://orig03.deviantart.net/536a/f/2014/070/b/3/enemy_skeleton_by_madgharr-d7945fv.gif';
+                           imglink = skeletonLink;
                            break;
                      }
 
@@ -276,7 +282,7 @@ var App = function (_React$Component) {
                            this.setState({
                               health: playerhp - damagein,
                               log: 'You attacked ' + 'Boss' + ' with ' + damageout + ' attack. Now his hp is ' + bossnexthp + '. Now your hp is ' + (playerhp - damagein),
-                              log_img: 'https://cdn2.scratch.mit.edu/get_image/user/3131893_90x90.png?v=1463891773.63'
+                              log_img: bossLink
                            });
                         } else {
                            alert('You won this game. Congrats!!!! (Applause sounds)');
@@ -295,13 +301,13 @@ var App = function (_React$Component) {
                      if (dungeon == 2) {
                         this.setState({
                            log: 'Now you need to kill the Boss. He has 1300 HP and 200 attack, be aware with this guy. And try to find Magic sword.',
-                           log_img: 'https://cdn2.scratch.mit.edu/get_image/user/3131893_90x90.png?v=1463891773.63',
+                           log_img: bossLink,
                            dungeon: 3
                         });
                      } else {
                         this.setState({
                            log: 'Find the door to next level. Dont forget to find 2 weapons on this level.',
-                           log_img: 'http://vignette3.wikia.nocookie.net/pixeldungeon/images/3/36/Door.png/revision/latest?cb=20130530170051',
+                           log_img: doorLink,
                            dungeon: 2
                         });
                      }
@@ -332,7 +338,7 @@ var App = function (_React$Component) {
                         var kek = 'Not increased because you have better weapon';
                         this.setState({
                            weapon: this.state.weapon,
-                           log_img: 'http://cheerfulghost.com/assets/art/closed_chest-13c599d705338d4d97dadcac6ceff516.png',
+                           log_img: chestLink,
                            log: "You've found a " + funny + " in a chest. Damage: " + kek,
                            attack: this.state.attack
                         });
@@ -340,7 +346,7 @@ var App = function (_React$Component) {
                         var kek = '+ ' + damage;
                         this.setState({
                            weapon: funny,
-                           log_img: 'http://cheerfulghost.com/assets/art/closed_chest-13c599d705338d4d97dadcac6ceff516.png',
+                           log_img: chestLink,
                            log: "You've found a " + funny + " in a chest. Damage: " + kek,
                            attack: (Math.floor(this.state.xp / 60) + 1) * 80 + damage
                         });
@@ -354,7 +360,7 @@ var App = function (_React$Component) {
                      copy[target - 60] = copy[target - 60].split(':')[0] + ':' + copy[target - 60].split(':')[1] + ':' + 'player';
                      this.setState({
                         health: this.state.health + 70,
-                        log_img: 'http://vignette2.wikia.nocookie.net/minecraft-computer/images/3/30/Potion_of_Healing.png/revision/latest?cb=20140406170100',
+                        log_img: potionLink,
                         log: "You've taken 70 hp potion. Now your HP is " + (this.state.health + 70)
                      });
                      break;
@@ -369,11 +375,11 @@ var App = function (_React$Component) {
                      switch (enemytype) {
                         case '2':
                            enemyname = 'Fish';
-                           imglink = 'https://media.giphy.com/media/29NpOANADahbO/giphy.gif';
+                           imglink = fishLink;
                            break;
                         case '1':
                            enemyname = 'Skeleton';
-                           imglink = 'http://orig03.deviantart.net/536a/f/2014/070/b/3/enemy_skeleton_by_madgharr-d7945fv.gif';
+                           imglink = skeletonLink;
                            break;
                      }
 
@@ -470,7 +476,7 @@ var App = function (_React$Component) {
                            this.setState({
                               health: playerhp - damagein,
                               log: 'You attacked ' + 'Boss' + ' with ' + damageout + ' attack. Now his hp is ' + bossnexthp + '. Now your hp is ' + (playerhp - damagein),
-                              log_img: 'https://cdn2.scratch.mit.edu/get_image/user/3131893_90x90.png?v=1463891773.63'
+                              log_img: bossLink
                            });
                         } else {
                            alert('You won this game. Congrats!!!! (Applause sounds)');
@@ -489,13 +495,13 @@ var App = function (_React$Component) {
                      if (dungeon == 2) {
                         this.setState({
                            log: 'Now you need to kill the Boss. He has 1300 HP and 200 attack, be aware with this guy. And try to find Magic sword.',
-                           log_img: 'https://cdn2.scratch.mit.edu/get_image/user/3131893_90x90.png?v=1463891773.63',
+                           log_img: bossLink,
                            dungeon: 3
                         });
                      } else {
                         this.setState({
                            log: 'Find the door to next level. Dont forget to find 2 weapons on this level.',
-                           log_img: 'http://vignette3.wikia.nocookie.net/pixeldungeon/images/3/36/Door.png/revision/latest?cb=20130530170051',
+                           log_img: doorLink,
                            dungeon: 2
                         });
                      }
@@ -526,7 +532,7 @@ var App = function (_React$Component) {
                         var kek = 'Not increased because you have better weapon';
                         this.setState({
                            weapon: this.state.weapon,
-                           log_img: 'http://cheerfulghost.com/assets/art/closed_chest-13c599d705338d4d97dadcac6ceff516.png',
+                           log_img: chestLink,
                            log: "You've found a " + funny + " in a chest. Damage: " + kek,
                            attack: this.state.attack
                         });
@@ -534,7 +540,7 @@ var App = function (_React$Component) {
                         var kek = '+ ' + damage;
                         this.setState({
                            weapon: funny,
-                           log_img: 'http://cheerfulghost.com/assets/art/closed_chest-13c599d705338d4d97dadcac6ceff516.png',
+                           log_img: chestLink,
                            log: "You've found a " + funny + " in a chest. Damage: " + kek,
                            attack: (Math.floor(this.state.xp / 60) + 1) * 80 + damage
                         });
@@ -548,7 +554,7 @@ var App = function (_React$Component) {
                      copy[target + 1] = copy[target + 1].split(':')[0] + ':' + copy[target + 1].split(':')[1] + ':' + 'player';
                      this.setState({
                         health: this.state.health + 70,
-                        log_img: 'http://vignette2.wikia.nocookie.net/minecraft-computer/images/3/30/Potion_of_Healing.png/revision/latest?cb=20140406170100',
+                        log_img: potionLink,
                         log: "You've taken 70 hp potion. Now your HP is " + (this.state.health + 70)
                      });
                      break;
@@ -563,11 +569,11 @@ var App = function (_React$Component) {
                      switch (enemytype) {
                         case '2':
                            enemyname = 'Fish';
-                           imglink = 'https://media.giphy.com/media/29NpOANADahbO/giphy.gif';
+                           imglink = fishLink;
                            break;
                         case '1':
                            enemyname = 'Skeleton';
-                           imglink = 'http://orig03.deviantart.net/536a/f/2014/070/b/3/enemy_skeleton_by_madgharr-d7945fv.gif';
+                           imglink = skeletonLink;
                            break;
                      }
 
@@ -664,7 +670,7 @@ var App = function (_React$Component) {
                            this.setState({
                               health: playerhp - damagein,
                               log: 'You attacked ' + 'Boss' + ' with ' + damageout + ' attack. Now his hp is ' + bossnexthp + '. Now your hp is ' + (playerhp - damagein),
-                              log_img: 'https://cdn2.scratch.mit.edu/get_image/user/3131893_90x90.png?v=1463891773.63'
+                              log_img: bossLink
                            });
                         } else {
                            alert('You won this game. Congrats!!!! (Applause sounds)');
@@ -683,13 +689,13 @@ var App = function (_React$Component) {
                      if (dungeon == 2) {
                         this.setState({
                            log: 'Now you need to kill the Boss. He has 1300 HP and 200 attack, be aware with this guy. And try to find Magic sword.',
-                           log_img: 'https://cdn2.scratch.mit.edu/get_image/user/3131893_90x90.png?v=1463891773.63',
+                           log_img: bossLink,
                            dungeon: 3
                         });
                      } else {
                         this.setState({
                            log: 'Find the door to next level. Dont forget to find 2 weapons on this level.',
-                           log_img: 'http://vignette3.wikia.nocookie.net/pixeldungeon/images/3/36/Door.png/revision/latest?cb=20130530170051',
+                           log_img: doorLink,
                            dungeon: 2
                         });
                      }
@@ -720,7 +726,7 @@ var App = function (_React$Component) {
                         var kek = 'Not increased because you have better weapon';
                         this.setState({
                            weapon: this.state.weapon,
-                           log_img: 'http://cheerfulghost.com/assets/art/closed_chest-13c599d705338d4d97dadcac6ceff516.png',
+                           log_img: chestLink,
                            log: "You've found a " + funny + " in a chest. Damage: " + kek,
                            attack: this.state.attack
                         });
@@ -728,7 +734,7 @@ var App = function (_React$Component) {
                         var kek = '+ ' + damage;
                         this.setState({
                            weapon: funny,
-                           log_img: 'http://cheerfulghost.com/assets/art/closed_chest-13c599d705338d4d97dadcac6ceff516.png',
+                           log_img: chestLink,
                            log: "You've found a " + funny + " in a chest. Damage: " + kek,
                            attack: (Math.floor(this.state.xp / 60) + 1) * 80 + damage
                         });
@@ -743,7 +749,7 @@ var App = function (_React$Component) {
                      copy[target + 60] = copy[target + 60].split(':')[0] + ':' + copy[target + 60].split(':')[1] + ':' + 'player';
                      this.setState({
                         health: this.state.health + 70,
-                        log_img: 'http://vignette2.wikia.nocookie.net/minecraft-computer/images/3/30/Potion_of_Healing.png/revision/latest?cb=20140406170100',
+                        log_img: potionLink,
                         log: "You've taken 70 hp potion. Now your HP is " + (this.state.health + 70)
                      });
                      break;
@@ -758,11 +764,11 @@ var App = function (_React$Component) {
                      switch (enemytype) {
                         case '2':
                            enemyname = 'Fish';
-                           imglink = 'https://media.giphy.com/media/29NpOANADahbO/giphy.gif';
+                           imglink = fishLink;
                            break;
                         case '1':
                            enemyname = 'Skeleton';
-                           imglink = 'http://orig03.deviantart.net/536a/f/2014/070/b/3/enemy_skeleton_by_madgharr-d7945fv.gif';
+                           imglink = skeletonLink;
                            break;
                      }
 
@@ -863,7 +869,7 @@ var App = function (_React$Component) {
          dungeon: 1,
          weapon: 'Knuckles',
          log: 'Find the door to next level. Dont forget to find 2 weapons on this level.',
-         log_img: 'http://vignette3.wikia.nocookie.net/pixeldungeon/images/3/36/Door.png/revision/latest?cb=20130530170051'
+         log_img: doorLink
       });
    };
 
